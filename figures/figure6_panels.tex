@@ -1,0 +1,67 @@
+\usepackage[T1]{fontenc}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, calc}
+
+\input{assets/fig6_numbers.tex}
+
+\definecolor{btAD}{HTML}{2C5F8A}
+\definecolor{btMid}{HTML}{5F86AE}
+\definecolor{btCtrl}{HTML}{A8C4DC}
+\definecolor{btPale}{HTML}{D8E4ED}
+\definecolor{btHilite}{HTML}{C1666B}
+\definecolor{btMuted}{HTML}{8A9BA8}
+\definecolor{btInk}{HTML}{1A3F5C}
+\definecolor{btFrame}{HTML}{B8BEC4}
+
+\hyphenpenalty=10000 \exhyphenpenalty=10000
+
+\tikzset{
+    >={Stealth[length=2.2mm, width=1.6mm]},
+    txt/.style   = {align=center, font=\footnotesize, text=black,
+                    inner sep=0pt},
+    head/.style  = {font=\footnotesize\bfseries, text=black, inner sep=1pt,
+                    anchor=south west},
+    chip/.style  = {line width=0.6pt, rounded corners=2pt, inner sep=0pt,
+                    align=center, font=\scriptsize, minimum width=0.92cm,
+                    minimum height=0.72cm},
+    solid/.style = {draw=btFrame, line width=0.7pt, rounded corners=3pt,
+                    inner xsep=4pt, inner ysep=3pt, align=center,
+                    font=\scriptsize},
+    ar/.style    = {->, black!60, line width=0.7pt},
+    tar/.style   = {->, black!65, line width=0.5pt},
+    tiny/.style  = {font=\scriptsize, text=black!60, inner sep=1pt},
+    blk/.style   = {solid, font=\footnotesize, inner xsep=6pt, inner ysep=5pt,
+                    text width=3.9cm},
+}
+
+\newcommand{\segbar}[5]{%
+  \begin{scope}[shift={(#1)}]
+    \pgfmathsetmacro{\segx}{-#2/2}
+    \foreach \n/\c/\l/\lc in {#5} {%
+      \pgfmathsetmacro{\segw}{#2*\n/#4}
+      \fill[\c, draw=white, line width=0.4pt]
+           (\segx, -#3/2) rectangle (\segx+\segw, #3/2);
+      \ifx\l\empty\else
+        \node[font=\scriptsize, text=\lc, inner sep=0pt]
+             at (\segx+\segw/2, 0) {\l};
+      \fi
+      \pgfmathsetmacro{\segnext}{\segx+\segw}
+      \global\let\segx\segnext
+    }
+  \end{scope}}
+
+\newcommand{\keptbar}[2]{%
+  \begin{scope}[shift={(#1)}]
+    \pgfmathsetmacro{\pr}{#2*\nDrop/\Nfeat}
+    \draw[btHilite, dashed, dash pattern=on 2pt off 1.5pt, line width=0.5pt]
+         (-#2/2, -0.21) rectangle (-#2/2+\pr, 0.21);
+    \fill[btPale] (-#2/2+\pr, -0.21) rectangle (#2/2, 0.21);
+    \node[font=\scriptsize, text=btInk, inner sep=0pt] at (\pr/2, 0)
+         {\nKeep{} kept features};
+  \end{scope}}

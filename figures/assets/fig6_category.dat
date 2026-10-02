@@ -1,0 +1,6 @@
+x category rate dropped total above rate_above rate_below
+0 Energy 0.5 3 6 1 0.5 nan
+1 Voice~Quality 0.5 1 2 1 0.5 nan
+2 MFCC 0.3462 27 78 1 0.3462 nan
+3 Spectral 0.1111 2 18 0 nan 0.1111
+4 Pitch 0.0 0 6 0 nan 0.0

@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "brainturtle"
+version = "1.0.0"
+description = "Age deconfounding for acoustic Alzheimer's classification"
+requires-python = ">=3.10"
+readme = "README.md"
+
+dependencies = [
+    "numpy==1.26.4",
+    "pandas==2.3.3",
+    "scikit-learn==1.7.2",
+    "scipy==1.15.3",
+    "joblib==1.5.3",
+    "lightgbm==4.6.0",
+    "matplotlib==3.10.8",
+    "openpyxl>=3.1",
+    "shap>=0.44",
+]
+
+[project.optional-dependencies]
+geometry = ["umap-learn>=0.5", "hdbscan>=0.8"]
+schematic = ["pymupdf>=1.24", "pillow>=10"]
+
+[project.scripts]
+brainturtle-run = "brainturtle.cli:main"
+
+[tool.setuptools]
+packages = ["brainturtle"]
+
+[tool.setuptools.package-data]
+brainturtle = ["py.typed"]

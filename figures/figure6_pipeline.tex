@@ -1,0 +1,132 @@
+\documentclass[border=4pt]{standalone}
+\input{figure6_panels.tex}
+
+\tikzset{
+    box/.style   = {draw=black!35, line width=0.8pt, rounded corners=4pt,
+                    fill=white, inner xsep=8pt, inner ysep=8pt,
+                    align=center, font=\small, text=black,
+                    minimum height=2.9cm},
+    excl/.style  = {box, dashed, dash pattern=on 4pt off 3pt},
+    capt/.style  = {align=center, font=\small, text=black, inner sep=0pt},
+    plett/.style = {font=\normalsize\bfseries, text=black, inner sep=0pt},
+    strm/.style  = {draw=black!45, dashed, dash pattern=on 2.5pt off 2pt,
+                    rounded corners=2pt, inner xsep=6pt, inner ysep=4pt,
+                    align=left, font=\footnotesize, text width=2.55cm},
+    solid/.style = {draw=black!35, line width=0.8pt, rounded corners=3pt,
+                    inner xsep=4pt, inner ysep=3pt, align=center,
+                    font=\footnotesize},
+    lab/.style   = {font=\footnotesize, text=black!60, inner sep=1pt},
+}
+\pgfplotsset{
+    fig6/.style = {
+      tick label style={font=\footnotesize, /pgf/number format/assume math mode=true},
+      label style={font=\footnotesize},
+      axis line style={black!35}, tick style={black!35},
+      ymajorgrids, grid style={btPale, line width=0.4pt},
+      axis x line*=bottom, axis y line*=left,
+      ylabel style={yshift=-4pt}, xlabel style={yshift=2pt},
+    },
+}
+\newcommand{\subtxt}{\footnotesize\color{black!60}}
+
+\begin{document}
+\begin{tikzpicture}
+
+\node[plett] at (-0.7, 0) {a)};
+
+\node[box, anchor=west, text width=3.0cm] (pitt) at (0, 0)
+     {\textbf{Pitt Corpus}\\
+      \PittSpk{} speakers\\
+      {\subtxt AD \PittAD{} $\cdot$ control \PittCtrl}};
+
+\node[excl, right=0.55cm of pitt, text width=4.3cm] (excl)
+     {\textbf{Removed: \nDrop{} age-sensitive}\\
+      {\subtxt of \Nfeat{} acoustic features}\\[3pt]
+      ranked on Common Voice\\
+      {\subtxt \CVspk{} speakers, no disease labels}};
+
+\node[box, right=0.55cm of excl, text width=4.9cm] (kept)
+     {\textbf{Modelled set: \nKeep{} features}\\[0.85cm]
+      {\subtxt MFCC~\kMFCC{} $\cdot$ spectral~\kSpec{} $\cdot$ pitch~\kPitch\\
+       energy~\kEnergy{} $\cdot$ voice quality~\kVoice}};
+\segbar{$(kept.center)+(0,0.18)$}{4.4}{0.46}{\nKeep}{%
+  \kMFCC/btAD/\kMFCC/white,
+  \kSpec/btMid/\kSpec/white,
+  \kPitch/btCtrl/\kPitch/btInk,
+  \kEnergy/btPale//btInk,
+  \kVoice/black!45//white}
+
+\node[box, right=0.55cm of kept, text width=3.6cm] (clf)
+     {\textbf{LightGBM classifier}\\
+      {\subtxt \nSeeds{} speaker-stratified splits}\\[3pt]
+      then, unchanged:\\
+      {\subtxt Kang \KangSpk{} $\cdot$ ADReSSo \ADRSpk}};
+
+\foreach \p/\q in {pitt/excl, excl/kept, kept/clf}{
+  \draw[ar] (\p) -- (\q);
+}
+
+\coordinate (rowb) at (0, -2.6);
+
+\begin{scope}[shift={(rowb)}]
+  \coordinate (rec) at (0.5, -1.85);
+  \foreach \i/\h in {0/0.10, 1/0.22, 2/0.38, 3/0.20, 4/0.44, 5/0.30,
+                     6/0.12, 7/0.34, 8/0.18, 9/0.08}{
+    \draw[btInk, line width=1.1pt, line cap=round]
+         ($(rec)+(-0.42+0.093*\i, -\h)$) -- ++(0, 2*\h);
+  }
+  \node[lab, anchor=north] at ($(rec)+(-0.1,-0.7)$) {raw audio};
+
+  \node[strm] (mfcc) at (2.7, -0.35) {MFCC \hfill 13 $\times$ \nStats{} (\nMFCC)};
+  \node[strm] (spec) at (2.7, -1.15) {Spectral \hfill 3 $\times$ \nStats{} (\nSpec)};
+  \node[strm] (pit)  at (2.7, -1.95) {Pitch \hfill 1 $\times$ \nStats{} (\nPitch)};
+  \node[strm] (ene)  at (2.7, -2.75) {Energy \hfill 1 $\times$ \nStats{} (\nEnergy)};
+  \node[strm] (voi)  at (2.7, -3.7)  {Voice \hfill \nVoice{} raw (Praat)};
+
+  \node[solid, minimum height=3.0cm, text width=1.15cm] (stats) at (5.05, -1.55)
+       {\textbf{\nStats{} stats}\\ per\\ signal};
+  \node[solid, minimum height=2.2cm, text width=1.1cm] (out) at (6.65, -2.35)
+       {\textbf{\Nfeat}\\ features};
+
+  \foreach \s in {mfcc, spec, pit, ene, voi}{
+    \draw[tar] ($(rec)+(0.5,0)$) -- (\s.west);
+  }
+  \foreach \s in {mfcc, spec, pit, ene}{
+    \draw[tar] (\s.east) -- (\s.east -| stats.west);
+  }
+  \draw[tar] (stats.east) -- (stats.east -| out.west);
+  \draw[tar] (voi.east) -- (voi.east -| out.west);
+\end{scope}
+\node[capt, anchor=north, text width=6.4cm] at ($(rowb)+(3.6,-4.6)$)
+     {\textbf{b)} Feature extraction: four frame-level streams, each
+      summarised by \nStats{} statistics, plus two voice-quality
+      measures, give \Nfeat{} features per recording.};
+
+\begin{scope}[shift={($(rowb)+(9.6,0)$)}]
+\begin{axis}[fig6,
+    anchor=north west, at={(0cm,0cm)},
+    width=9.6cm, height=4.4cm,
+    ybar, bar width=1.7pt,
+    xmin=0, xmax=\Nfeat+1, ymin=0, ymax=2.5,
+    xtick={1,33,110}, xticklabels={1,\nDrop,\Nfeat},
+    ylabel={mean |SHAP| (years)}, xlabel={feature rank},
+    clip=false,
+  ]
+  \addplot[fill=btHilite, draw=btHilite, line width=0.3pt]
+      table[x=rank, y=shap, restrict x to domain=1:\nDrop] {assets/fig6_ranking.dat};
+  \addplot[fill=btCtrl, draw=btCtrl, line width=0.3pt]
+      table[x=rank, y=shap, restrict x to domain=34:\Nfeat] {assets/fig6_ranking.dat};
+  \draw[black!50, dashed, line width=0.5pt] (axis cs:33.5, 0) -- (axis cs:33.5, 2.35);
+  \node[lab, anchor=south west, text=btHilite] at (axis cs:10, 1.1) {removed};
+  \node[lab, anchor=south, text=btAD] at (axis cs:74, 0.45) {kept};
+  \node[lab, anchor=north west, text=black, inner sep=2pt] at (axis cs:36, 2.45)
+       {top \dropPct\% cut};
+\end{axis}
+\end{scope}
+\node[capt, anchor=north, text width=8.8cm] at ($(rowb)+(14.55,-4.6)$)
+     {\textbf{c)} Age sensitivity: SHAP importance of each feature in a
+      LightGBM age model fitted on Common Voice. The top \dropPct\% are
+      removed.};
+
+\end{tikzpicture}
+\end{document}
