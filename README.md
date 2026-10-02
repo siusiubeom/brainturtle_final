@@ -14,9 +14,10 @@
 | ADReSSo 2021 | external validation | https://media.talkbank.org/dementia/English/0extra/ADReSSo (requires approval) |
 | Mozilla Common Voice (en-AU, v24) | normative age reference | https://datacollective.mozillafoundation.org/datasets/cmko7havo02f5nw07rbwwhowe (public) |
 
-This repository and its Zenodo archive hold the code and the figures. Raw audio (~6.9 GB) and the
-feature tables, saved classifiers and result tables derived from it are not included; the corpora
-are available from the sources listed above.
+This repository holds the code, the figures and the speaker-level acoustic feature tables with
+the feature rankings (`data/`); the Zenodo archive holds the code and the figures. Raw audio (~6.9 GB), the corpus demographic
+files (`data/PItt-data.xlsx`, `demo-kang.xlsx`, Common Voice metadata), saved classifiers and
+result tables are not included; the corpora are available from the sources listed above.
 
 ### Expected directory layout for the audio
 
@@ -72,6 +73,7 @@ signal-processing values below.
 ```
 brainturtle/        the package: paths, constants, loaders, evaluation, resampling
 analyses/           one script per result, each writing CSVs to results/n10000/
+data/               feature tables and feature rankings read by the analyses
 figures/            one script per figure (figure6_pipeline.tex is TikZ) and the rendered figures
 run_all.py          runs the analyses in dependency order
 ```

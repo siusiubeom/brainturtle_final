@@ -13,7 +13,18 @@ dist/
 Thumbs.db
 desktop.ini
 
-data/
+data/*
+!data/features/
+data/features/*
+!data/features/speaker_features.csv
+!data/features/file_features.csv
+!data/features/addresso2021_speaker_features.csv
+!data/korean_speaker_features.csv
+!data/korean_speaker_features_cut.csv
+!data/commonvoice_speaker_features.csv
+!data/age_shap_ranking.csv
+!data/age_feature_importance_commonvoice.csv
+!data/gender_shap_ranking.csv
 results/
 models_pitt_full/
 features_pitt_full/
